@@ -22,7 +22,8 @@ const Signup = () => {
         setFormData((prevVal) => { return ({ ...prevVal, [name]: value }) })
     }
 
-    const handleClick = () => {
+    const handleForm = (event) => {
+        event.preventDefault();
         console.log("i have been clicked");
         const url = isLogin ? 'login' : 'signup';
         const postURL = 'http://localhost:3000/api/' + url;
@@ -49,22 +50,26 @@ const Signup = () => {
                 <div className="form">
                     {/* top part of form with name email and password */}
                     <div className="form-top">
-                        {/* to show login and ignore name when on login page */}
-                        {isLogin ? <h2>Login into Account</h2> : <>
-                            <h2>Create an Account</h2>
-                            <input type="text" name="name" placeholder="Name" value={formData.name} onChange={handleChange} required />
-                        </>}
+                        <form onSubmit={handleForm}>
+                            <div className="nested-form">
+                                {/* to show login and ignore name when on login page */}
+                                {isLogin ? <h2>Login into Account</h2> : <>
+                                    <h2>Create an Account</h2>
+                                    <input type="text" name="name" placeholder="Name" value={formData.name} onChange={handleChange} required />
+                                </>}
 
-                        <input type="email" name="email" placeholder="Email Address" value={formData.email} onChange={handleChange} required />
-                        <input type="password" name="pass" placeholder="Password" value={formData.pass} onChange={handleChange} required />
-                        <button className="btns" type="submit" onClick={handleClick}>{isLogin ? 'Login' : 'Sign Up'}</button>
+                                <input type="email" name="email" placeholder="Email Address" value={formData.email} onChange={handleChange} required />
+                                <input type="password" name="pass" placeholder="Password" value={formData.pass} onChange={handleChange} required />
+                                <button className="btns" type="submit">{isLogin ? 'Login' : 'Sign Up'}</button>
 
-                        {isLogin ? <>
-                            <p className="login-text">Don't have an account? <a href="/">Signup</a></p></>
-                            :
-                            <><p className="login-text">Already have an account? <a href="/login">Login</a></p>
-                            </>
-                        }
+                                {isLogin ? <>
+                                    <p className="login-text">Don't have an account? <a href="/">Signup</a></p></>
+                                    :
+                                    <><p className="login-text">Already have an account? <a href="/login">Login</a></p>
+                                    </>
+                                }
+                            </div>
+                        </form>
                     </div>
                     <h4>Continue with</h4>
                     {/* top part of form to signup with google and facebook */}
