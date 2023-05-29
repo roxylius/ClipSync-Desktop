@@ -1,5 +1,10 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, clipboard, ipcRenderer } = require('electron')
+const clipboardListener = require('clipboard-event');
 require('@electron/remote/main').initialize();
+
+
+//
+const { COPIED_TEXT } = require("../src/utils/constants");
 
 function createWindow() {
   // Create the browser window.
@@ -8,7 +13,8 @@ function createWindow() {
     height: 600,
     webPreferences: {
       enableRemoteModule: true,
-      nodeIntegration: true
+      nodeIntegration: true,
+      contextIsolation: false
     }
   })
 
@@ -16,7 +22,24 @@ function createWindow() {
   win.loadURL('http://localhost:3000');
 
   // Open the DevTools.
-  win.webContents.openDevTools()
+  win.webContents.openDevTools();
+
+  //add listener for electron native clipboard
+  // win.addListener("")
+
+  // To start listening
+  clipboardListener.startListening();
+
+  //when text is copied i.e. the event occurs
+  clipboardListener.on('change', () => {
+    const text = clipboard.readText();
+    console.log(text);
+
+    //sends message to the renderer
+    win.webContents.send(COPIED_TEXT, text);
+  });
+
+
 }
 
 // This method will be called when Electron has finished
@@ -36,7 +59,6 @@ app.on('window-all-closed', () => {
 app.on('activate', () => {
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
-
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow()
   }

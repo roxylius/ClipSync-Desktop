@@ -7,9 +7,9 @@ import ClipB from './components/clipboard';
 function App() {
   return (
     <Routes>
-      <Route exact path='/' element={<Signup />} />
-      <Route path='/login' element={<Signup />} />
-      <Route path='/clipboard' element={<ClipB />} />
+      {/* <Route exact path='/' element={<Signup />} /> */}
+      {/* <Route path='/login' element={<Signup />} /> */}
+      <Route path='/' element={<ClipB />} />
     </Routes>
   );
 }
