@@ -3,7 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const server = express(); //var server uses all the express function
-const port = 3000 || process.env.PORT; //port
+const port = process.env.PORT || 3000; //port
 const DB = process.env.MONGODB_ATLAS;  //database link
 
 
