@@ -8,6 +8,7 @@ const getUserRouter = require('./views/getUser');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const passport = require('passport');
+const MongoDBStore = require('connect-mongodb-session')(session);
 
 
 const app = express();
@@ -16,10 +17,27 @@ const app = express();
 app.use(cors({ origin: process.env.CLIENT_URL, credentials: true })); //to enable cross origin resourse sharing ie make post,get,etc request form different url
 app.use(bodyParser.urlencoded({ extended: true })); //to read the post request from html form
 app.use(express.json()); //to interpret json
+var store = new MongoDBStore( //setup to store the session in DB
+    {
+        uri: process.env.MONGODB_ATLAS,
+        collection: process.env.MONGODB_SESSION
+    }
+);
+
+//event listner to catch the error 
+store.on('error', function (error) {
+    // Also get an error here
+    console.log("There is err storing session: ", error);
+});
+
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    cookie: {
+        maxAge: 1000 * 60 * 60 * 24 * 180 //30 days
+    },
+    store: store
 }));
 app.use(passport.initialize());
 app.use(passport.session());

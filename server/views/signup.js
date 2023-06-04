@@ -16,6 +16,7 @@ passport.deserializeUser(User.deserializeUser()); //retrieves the data stored in
 SignupRouter.post("/", async (req, res) => {
     //retrieve input passed by client application
     const { email, password, name } = req.body;
+    console.log(email, password, name);
 
     //find the user in DB
     const foundUser = await User.findOne({ email: email });
