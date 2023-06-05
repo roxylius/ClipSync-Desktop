@@ -5,6 +5,7 @@ const cors = require('cors');
 const loginRouter = require('./views/login');
 const signupRouter = require('./views/signup');
 const getUserRouter = require('./views/getUser');
+const googleRouter = require('./views/google');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const passport = require('passport');
@@ -35,17 +36,36 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        maxAge: 1000 * 60 * 60 * 24 * 180 //30 days
+        maxAge: 1000 * 60 * 60 * 24 * 180 //180 days
     },
     store: store
 }));
 app.use(passport.initialize());
 app.use(passport.session());
 
+const User = require('./schema/user');
+
+// used to serialize the user for the session
+passport.serializeUser(function (user, done) {
+    done(null, user.id);
+});
+
+// used to deserialize the user
+passport.deserializeUser(async function (id, done) {
+    try {
+        const user = await User.findById(id).exec();
+        done(null, user);
+    } catch (error) {
+        done(error, null);
+    }
+});
+
+
 // Routes
 app.use('/api/login', loginRouter);
 app.use('/api/signup', signupRouter);
 app.use('/api/user', getUserRouter);
+app.use('/api/auth/google', googleRouter);
 
 
 // Error handling middleware

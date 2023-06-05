@@ -9,14 +9,11 @@ const User = require('../schema/user.js');
 
 // //handled by passport-local-mongoose
 passport.use(User.createStrategy({ usernameField: 'email' })); //verify credentials from DB
-passport.serializeUser(User.serializeUser()); //abstracts the user data to store in session
-passport.deserializeUser(User.deserializeUser()); //retrieves the data stored in session which helps to fetch user data from DB
 
 // Handle POST request for the signup page
 SignupRouter.post("/", async (req, res) => {
     //retrieve input passed by client application
     const { email, password, name } = req.body;
-    console.log(email, password, name);
 
     //find the user in DB
     const foundUser = await User.findOne({ email: email });
@@ -35,7 +32,7 @@ SignupRouter.post("/", async (req, res) => {
             else {
                 //authenticates the user based on local strategy and sends the session with the response
                 passport.authenticate('local')(req, res, () => {
-                    res.status(200).json({ message: 'User Authenticated!', heloo: req.user });
+                    res.status(200).json({ message: 'User Authenticated!' });
                 });
             }
         });

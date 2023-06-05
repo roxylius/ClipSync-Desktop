@@ -8,8 +8,6 @@ const User = require('../schema/user');
 
 // //handled by passport-local-mongoose module
 passport.use(User.createStrategy({ usernameField: 'email' })); //verify credentials from DB
-passport.serializeUser(User.serializeUser()); //abstracts the user data to store in session
-passport.deserializeUser(User.deserializeUser()); //retrieves the data stored in session which helps to fetch user data from DB
 
 //it handle the post request of user page
 getUserRouter.get("/", (req, res) => {
