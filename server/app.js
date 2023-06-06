@@ -2,20 +2,23 @@ require('dotenv').config();
 
 const express = require('express');
 const cors = require('cors');
-const loginRouter = require('./views/login');
-const signupRouter = require('./views/signup');
-const getUserRouter = require('./views/getUser');
-const googleRouter = require('./views/google');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const passport = require('passport');
 const MongoDBStore = require('connect-mongodb-session')(session);
+//express routers to handle routes
+const loginRouter = require('./views/login');
+const signupRouter = require('./views/signup');
+const getUserRouter = require('./views/getUser');
+const googleRouter = require('./views/google');
+const githubRouter = require('./views/github');
+const logoutRouter = require('./views/logout');
 
 
 const app = express();
 
 //set up middleware
-app.use(cors({ origin: process.env.CLIENT_URL, credentials: true })); //to enable cross origin resourse sharing ie make post,get,etc request form different url
+app.use(cors({ origin: 'http://localhost:3001', credentials: true, methods: ['GET', 'POST', 'DELETE'] })); //to enable cross origin resourse sharing ie make post,get,etc request form different url
 app.use(bodyParser.urlencoded({ extended: true })); //to read the post request from html form
 app.use(express.json()); //to interpret json
 var store = new MongoDBStore( //setup to store the session in DB
@@ -66,7 +69,8 @@ app.use('/api/login', loginRouter);
 app.use('/api/signup', signupRouter);
 app.use('/api/user', getUserRouter);
 app.use('/api/auth/google', googleRouter);
-
+app.use('/api/auth/github', githubRouter);
+app.use('/api/logout', logoutRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

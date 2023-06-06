@@ -23,7 +23,7 @@ SignupRouter.post("/", async (req, res) => {
         res.status(401).json({ message: 'The email already exists!' });
     else {
         //create a new user
-        const newUser = new User({ email: email, name: name });
+        const newUser = new User({ email: email, name: name, provider: 'local' });
 
         //registers the user using passport-local-mongoose fn
         User.register(newUser, password, (err, user) => {

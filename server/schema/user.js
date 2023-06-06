@@ -13,6 +13,8 @@ const userSchema = new Schema({
         unique: true
     },
     googleId: String,
+    githubId: String,
+    provider: String, //where did the user data come from 
     // password: { // Password field not required as it is being handled by passport-local-mongoose
     //     type: String,
     //     required: true
