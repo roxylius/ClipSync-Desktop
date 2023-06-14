@@ -18,7 +18,21 @@ const logoutRouter = require('./views/logout');
 const app = express();
 
 //set up middleware
-app.use(cors({ origin: 'http://localhost:3001', credentials: true, methods: ['GET', 'POST', 'DELETE'] })); //to enable cross origin resourse sharing ie make post,get,etc request form different url
+const corsOptions = {
+    credentials: true,
+    allowedHeaders: ['Origin, X-Requested-With, Content-Type, Accept'],
+    origin: [
+        'http://localhost:3000',
+        'http://127.0.0.1:3000',
+        'http://localhost:3001',
+        'http://127.0.0.1:3001',
+        'http://172.18.14.94:3001',
+        'http://0.0.0.0:3001'
+    ]
+};
+app.use(cors(corsOptions));
+// app.use(cors({ origin: 'http://localhost:3001', credentials: true, methods: ['GET', 'POST', 'DELETE'] })); //to enable cross origin resourse sharing ie make post,get,etc request form different url
+// app.use(cors({ origin: ['http://localhost:3001', 'http://172.19.97.149:3001'], credentials: true, methods: ['GET', 'POST', 'DELETE'] })); //to enable cross origin resourse sharing ie make post,get,etc request form different url
 app.use(bodyParser.urlencoded({ extended: true })); //to read the post request from html form
 app.use(express.json()); //to interpret json
 var store = new MongoDBStore( //setup to store the session in DB
@@ -34,15 +48,20 @@ store.on('error', function (error) {
     console.log("There is err storing session: ", error);
 });
 
+app.set('trust proxy', 1);
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
+        httpOnly: false,
+        sameSite: 'none',
+        secure: true,
         maxAge: 1000 * 60 * 60 * 24 * 180 //180 days
     },
     store: store
 }));
+
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -71,6 +90,11 @@ app.use('/api/user', getUserRouter);
 app.use('/api/auth/google', googleRouter);
 app.use('/api/auth/github', githubRouter);
 app.use('/api/logout', logoutRouter);
+
+//testing only 
+app.get('/', (req, res) => {
+    res.send("server is up and running!");
+})
 
 // Error handling middleware
 app.use((err, req, res, next) => {

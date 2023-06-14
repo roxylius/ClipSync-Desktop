@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const server = express(); //var server uses all the express function
 const port = process.env.PORT || 3000; //port
 const DB = process.env.MONGODB_ATLAS;  //database link
-
+const handleSocket = require('./views/socket'); //handles socket connections
 
 //connect to mongo database
 mongoose.connect(DB)
@@ -21,4 +21,7 @@ server.use(app);
 
 
 //the server is started on the given port
-server.listen(port, () => console.log("The server is listening on port: ", port, '....'));
+const socketserver = server.listen(port, () => console.log("The server is listening on port: ", port, '....'));
+
+//handle socket connection
+handleSocket(socketserver);
