@@ -1,0 +1,17 @@
+body {
+  margin: 0;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+body {
+  height: 100vh;
+  width: 100vw;
+}
+
+body::-webkit-scrollbar {
+  display: none;
+}
+
+#root {
+  height: 100%;
+}

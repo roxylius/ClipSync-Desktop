@@ -1,0 +1,67 @@
+{
+  "name": "clip-sync",
+  "productName": "Clipboard Sync",
+  "version": "1.0.0",
+  "author": "Black Crow",
+  "description": "An App to Synchronize Clipboard",
+  "main": "public/electron.js",
+  "homepage": "./",
+  "private": true,
+  "dependencies": {
+    "@electron/remote": "^2.0.9",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "axios": "^1.4.0",
+    "clipboard-event": "^1.6.0",
+    "electron-browser-storage": "^1.0.7",
+    "electron-devtools-installer": "^3.2.0",
+    "electron-is-dev": "^2.0.0",
+    "electron-store": "^8.1.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.10.0",
+    "react-scripts": "5.0.1",
+    "socket.io": "^4.6.2",
+    "socket.io-client": "^4.6.2",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "dev": "concurrently -k \"cross-env BROWSER=none PORT=3001 npm start\" \"wait-on http://127.0.0.1:3001/ --timeout 45000 && npm run electron\"",
+    "electron": "electronmon .",
+    "electron-pack": "electron-builder -c.extraMetadata.main=build/electron.js -mwl",
+    "preelectron-pack": "react-scripts build",
+    "build-electron": "mkdir build/src && robocopy electron build/electron /S & robocopy src/shared build/src/shared /S"  
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "concurrently": "^8.0.1",
+    "cross-env": "^7.0.3",
+    "electron": "^23.2.0",
+    "electron-builder": "^24.4.0",
+    "electron-react-devtools": "^0.5.3",
+    "electronmon": "^2.0.2",
+    "wait-on": "^7.0.1"
+  }
+}

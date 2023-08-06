@@ -1,0 +1,68 @@
+@font-face {
+    font-family: 'HelveticaNeue Light';
+    src: url(../assets/fonts/HelveticaNeue\ Light.ttf);
+}
+
+.background {
+    background-color: #282828;
+    height: 100%;
+}
+
+
+.clipboard-container {
+    /* background-color: aqua; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height: 100%;
+    background-color: #282828;
+    color: whitesmoke;
+}
+
+.clipboard-container h1 {
+    font-family: 'HelveticaNeue Light';
+}
+
+.connected-devices {
+    display: flex;
+    flex-direction: column;
+    float: left;
+    /* width: 1000px; */
+    overflow-y: auto;
+    height: 200px;
+}
+
+
+.connected-devices::-webkit-scrollbar {
+    width: 16px;
+}
+
+.connected-devices::-webkit-scrollbar-track {
+    background-color: #e4e4e4;
+    border-radius: 100px;
+
+}
+
+.connected-devices::-webkit-scrollbar-thumb {
+    background-color: grey;
+    border-radius: 100px;
+
+}
+
+/* div container containing connected devices */
+.device {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding-right: 40px;
+}
+
+.device img {
+    width: 2.5rem;
+}
+
+.device p {
+    font-size: 1rem;
+    padding-left: 1rem;
+}

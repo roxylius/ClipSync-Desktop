@@ -1,0 +1,105 @@
+.navbar {
+    display: flex;
+    flex-direction: row;
+    background-color: #181818;
+    color: whitesmoke;
+    justify-content: space-between;
+    height: 60px;
+    border-radius: 0px 0px 20px 20px;
+}
+
+.navbar ul {
+    list-style: none;
+    display: flex;
+    flex-direction: row;
+    padding-right: 6%;
+    align-items: center;
+}
+
+.navbar img {
+    height: 100%;
+    object-fit: fill;
+    padding-left: 12px;
+
+}
+
+.list-items {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.list-items a {
+    padding-left: 10px;
+    padding-right: 4px;
+    text-decoration: none;
+    color: whitesmoke;
+}
+
+/* select and drop down menu */
+.list-choice {
+    width: 100%;
+    margin: 1em auto;
+    position: relative;
+    cursor: pointer;
+}
+
+.list-choice input[type="radio"] {
+    position: absolute;
+    left: -9999px;
+}
+
+.list-choice-title {
+    width: 100%;
+    display: block;
+    padding: 0.55em 1em;
+    box-sizing: border-box;
+    color: #FFF;
+    border-radius: 0.2em;
+
+}
+
+.list-choice:hover .list-choice-title {
+    border-radius: 0.2em 0.2em 0 0;
+}
+
+.list-choice-objects label:nth-last-of-type(1) span {
+    border-radius: 0 0 0.2em 0.2em;
+}
+
+.list-choice span {
+    color: #FFF;
+    background: #5c5959;
+    padding: 0.55em 1em;
+    display: block;
+    box-sizing: border-box;
+    cursor: pointer;
+    width: 100%;
+}
+
+.list-choice-objects {
+    position: absolute;
+    top: 0;
+    padding-top: 2.1em;
+    box-sizing: border-box;
+    width: 'fit-content';
+    overflow: hidden;
+    max-height: 0;
+    transition: all 250ms ease;
+    margin-left: auto;
+    right: 0;
+}
+
+.list-choice:hover .list-choice-objects span {
+    position: relative;
+    top: 0;
+    transition: all 250ms ease-in-out;
+}
+
+.list-choice:hover .list-choice-objects label:nth-last-of-type(1) input[type="radio"]:checked+span {
+    border-radius: 0 0 0.2em 0.2em;
+}
+
+.list-choice:hover .list-choice-objects {
+    max-height: 540px;
+}
