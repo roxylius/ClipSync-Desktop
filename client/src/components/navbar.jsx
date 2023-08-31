@@ -36,7 +36,7 @@ const Navbar = () => {
                     </label>
                 </div>
             </div>
-            <a href="/" onClick={handleLogout}>logout</a>
+            <a href="/#/" onClick={handleLogout}>logout</a>
         </div>
     </div>)
 }

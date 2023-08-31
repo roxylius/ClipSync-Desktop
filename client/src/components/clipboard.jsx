@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import io, { connect } from "socket.io-client";
+import io from "socket.io-client";
 
 //importing local assets
 import MobileIcon from './assets/img/smartphone.png';
@@ -11,7 +11,7 @@ const electron = window.require("electron");
 const { ipcRenderer } = electron;
 
 //constants
-const { COPIED_TEXT } = require("../utils/constants");
+const { COPIED_TEXT } = require("../shared/constants");
 
 //etablishes a socket connection to the server 
 const serverURL = process.env.REACT_APP_SERVER_URL;

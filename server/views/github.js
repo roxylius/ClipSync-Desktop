@@ -14,7 +14,7 @@ const User = require('../schema/user');
 passport.use(new GitHubStrategy({
     clientID: process.env.GITHUB_CLIENT_ID,
     clientSecret: process.env.GITHUB_CLIENT_SECRET,
-    callbackURL: "http://localhost:3000/api/auth/github/redirect",
+    callbackURL: process.env.CALLBACK_URL_ORIGIN + "/api/auth/github/redirect",
     passReqToCallback: true, // req object on auth is passed as first arg
     scope: ['user:email'], // fetches non-public emails as well
 },
@@ -32,7 +32,7 @@ githubRouter.get('/', passport.authenticate('github'));
 //redirect url after gitub authentication
 githubRouter.get('/redirect', passport.authenticate('github', { failureRedirect: '/api/auth/github/redirect' }), function (req, res) {
     // Successful authentication, redirect home.
-    res.redirect('http://localhost:3001');
+    res.redirect(process.env.CLIENT_URL);
 });
 
 //handles failed authentication from github

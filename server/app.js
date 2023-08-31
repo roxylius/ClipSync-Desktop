@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const passport = require('passport');
 const MongoDBStore = require('connect-mongodb-session')(session);
+
 //express routers to handle routes
 const loginRouter = require('./views/login');
 const signupRouter = require('./views/signup');
@@ -18,21 +19,7 @@ const logoutRouter = require('./views/logout');
 const app = express();
 
 //set up middleware
-const corsOptions = {
-    credentials: true,
-    allowedHeaders: ['Origin, X-Requested-With, Content-Type, Accept'],
-    origin: [
-        'http://localhost:3000',
-        'http://127.0.0.1:3000',
-        'http://localhost:3001',
-        'http://127.0.0.1:3001',
-        'http://172.18.14.94:3001',
-        'http://0.0.0.0:3001'
-    ]
-};
-app.use(cors(corsOptions));
-// app.use(cors({ origin: 'http://localhost:3001', credentials: true, methods: ['GET', 'POST', 'DELETE'] })); //to enable cross origin resourse sharing ie make post,get,etc request form different url
-// app.use(cors({ origin: ['http://localhost:3001', 'http://172.19.97.149:3001'], credentials: true, methods: ['GET', 'POST', 'DELETE'] })); //to enable cross origin resourse sharing ie make post,get,etc request form different url
+app.use(cors({ origin: ['http://localhost:3001', 'http://localhost:4444', 'exp://192.168.239.205:19000', 'http://localhost:7501'], credentials: true, methods: ['GET', 'POST', 'DELETE'] })); //to enable cross origin resourse sharing ie make post,get,etc request form different url
 app.use(bodyParser.urlencoded({ extended: true })); //to read the post request from html form
 app.use(express.json()); //to interpret json
 var store = new MongoDBStore( //setup to store the session in DB
@@ -48,15 +35,14 @@ store.on('error', function (error) {
     console.log("There is err storing session: ", error);
 });
 
-app.set('trust proxy', 1);
+app.set('trust proxy', 1); //allows express.js behind a reverse proxy to trust proxy server  
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
-        httpOnly: false,
-        sameSite: 'none',
-        secure: true,
+        sameSite: 'none', //to allow cross-site cookies
+        secure: true, // secures the cookie
         maxAge: 1000 * 60 * 60 * 24 * 180 //180 days
     },
     store: store

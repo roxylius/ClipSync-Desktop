@@ -10,6 +10,11 @@ node_modules/
 
 # production
 /build
+build/
+
+#packaging
+dist/
+/dist
 
 # misc
 .DS_Store
@@ -25,3 +30,5 @@ yarn-error.log*
 
 #vscode 
 .vscode/
+
+

@@ -1,0 +1,13 @@
+[x] if the receieve copied message from remote devices is same as the local copied message then don't copy it to clipboard
+[X] Create a var to locally store user data and instead of fetching user data fetch local data and log him
+[x] closing window doesn't close the app
+[x] create system tray icon for app to run in background 
+[x] closing window minimizes to system tray icon
+[x] have option to right click system tray icon to close the app
+[x] add stop service fn to handle when the service is stopped
+[x] show devices connected on same account just windows or android
+[x] remove connected devices when disconnected
+[x] add logout route remove the electron store values 
+[x] fix electron store values not changing
+[] fix login in with google
+[] fix login in with github

@@ -3,11 +3,30 @@ const clipboardListener = require('clipboard-event');
 require('@electron/remote/main').initialize();
 const Store = require('electron-store');
 const path = require('path');
-// const isDev = require('electron-is-dev');
+const isDev = require('electron-is-dev');
+// const url = require('url');
+const express = require('express');
+
+//creating http server(express app) instance
+const expressApp = express();
+
+// Serve the static files from the build directory
+expressApp.use(express.static(path.join(__dirname, '../build')));
+
+// Define a route to serve the main HTML file
+expressApp.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../build', 'index.html'));
+});
+
+// Start the Express server
+const server = expressApp.listen(7501, () => {
+  console.log('Server is running on port 7501');
+});
 
 //contants
-const { COPIED_TEXT } = require("../src/utils/constants");
-
+// const isDev = true;
+const { COPIED_TEXT } = require(isDev ? "../src/shared/constants" : path.join(__dirname, '../build/src/shared/constants'));
+// console.log(path.join(__dirname, '../build/src/shared/constants'));
 const store = new Store();
 
 //create tray element
@@ -19,21 +38,31 @@ function createWindow() {
   win = new BrowserWindow({
     width: 800,
     height: 600,
+    title: 'ClipSync',
     webPreferences: {
       enableRemoteModule: true,
       nodeIntegration: true,
-      contextIsolation: false
+      contextIsolation: false,
+      devTools: false // Disable developer tools using crtl + shift + i
     }
   })
 
   //load the index.html from a url when the user is not logged in else load '/clipboard'
   if (store.get('userInfo') === undefined) {
-    win.loadURL('http://localhost:3001');
+    win.loadURL(isDev !== true ? 'http://localhost:7501/' : "http://localhost:3001");
+    //test for dev purpose when u build react apps
+    // url.format({
+    //   pathname: path.join(__dirname, '../build/index.html'),
+    //   protocol: 'file:',
+    //   slashes: true
+    // })
+
     console.log("user info: ", store.get('userInfo'));
     console.log("login");
   }
   else {
-    win.loadURL('http://localhost:3001/clipboard');
+    win.loadURL(isDev !== true ? 'http://localhost:7501/#/clipboard' : "http://localhost:3001/#/clipboard");
+
     console.log("user info: ", store.get('userInfo'));
     console.log("clipboard");
 
@@ -42,6 +71,12 @@ function createWindow() {
 
   // Open the DevTools.
   // win.webContents.openDevTools();
+
+  //this will prevent inspect element by right click
+  win.webContents.on('context-menu', (e, props) => {
+    // Disable the context menu
+    e.preventDefault();
+  });
 
   //stores the remote copied text send from renderer
   let remote_copied_text;
@@ -72,7 +107,7 @@ function createWindow() {
 
     store.delete('userInfo');
     console.log('userdelete!');
-    win.loadURL('http://localhost:3001');
+    win.loadURL(isDev !== true ? 'http://localhost:7501/' : "http://localhost:3001");
   });
 
 
@@ -96,7 +131,7 @@ function createWindow() {
 
   //set up tray element
   try {
-    const iconPath = path.join(__dirname, 'icon.png');
+    const iconPath = path.join(isDev ? 'public/icon.png' : path.join(__dirname, '../build/icon.png'));
 
     tray = new Tray(iconPath);
     const contextMenu = Menu.buildFromTemplate([

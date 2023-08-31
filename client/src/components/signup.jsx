@@ -14,8 +14,9 @@ const Signup = () => {
     const navigate = useNavigate();
 
     //check if url is login page or not
-    const currentURL = window.location.href;
-    const isLogin = currentURL.includes("login");
+    // const currentURL = window.location.href;       // dev test
+    // const isLogin = currentURL.includes("login"); //dev test
+    const [isLogin, setIsLogin] = useState(false);
 
     //stores server url
     const serverURL = process.env.REACT_APP_SERVER_URL;
@@ -122,6 +123,18 @@ const Signup = () => {
             .catch(error => console.error(error));
     }
 
+    //handle Login click
+    const handleLogin = (e) => {
+        e.preventDefault();
+        setIsLogin(true);
+    }
+
+    //handle signup click
+    const handleSignup = (e) => {
+        e.preventDefault();
+        setIsLogin(false);
+    }
+
     //handle google login
     const googleLogin = () => {
         window.open(serverURL + '/api/auth/google', "_self");
@@ -154,18 +167,19 @@ const Signup = () => {
                                 <button className="btns" type="submit">{isLogin ? 'Login' : 'Sign Up'}</button>
 
                                 {isLogin ? <>
-                                    <p className="login-text">Don't have an account? <a href="/">Signup</a></p></>
+                                    <p className="login-text">Don't have an account? <a href="/#/" onClick={handleSignup}>Signup</a></p></>
                                     :
-                                    <><p className="login-text">Already have an account? <a href="/login">Login</a></p>
+                                    <><p className="login-text">Already have an account? <a href="/#/" onClick={handleLogin}>Login</a></p>
                                     </>
                                 }
                                 {response.statusCode === 401 ? <p className="error">{response.body}</p> : null}
                             </div>
                         </form>
                     </div>
-                    <h4>Continue with</h4>
+                    {/* currently working on fixing on running google and github in electron chromium instance */}
+                    {/* <h4>Continue with</h4> */}
                     {/* top part of form to signup with google and Github */}
-                    <div className="form-bottom">
+                    {/* <div className="form-bottom">
                         <button className="google" onClick={googleLogin}>
                             <img src={GoogleIcon} className="img-icon btns" alt='' />
                         </button>
@@ -173,11 +187,11 @@ const Signup = () => {
                         <button className="github" onClick={githubLogin}>
                             <img src={GithubIcon} className="img-icon btns" alt="" />
                         </button>
-                    </div>
+                    </div> */}
 
                 </div>
-            </div>
-        </div>
+            </div >
+        </div >
     </>)
 }
 

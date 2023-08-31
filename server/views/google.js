@@ -13,7 +13,7 @@ const User = require('../schema/user');
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "http://localhost:3000/api/auth/google/redirect"
+    callbackURL: process.env.CALLBACK_URL_ORIGIN + "/api/auth/google/redirect"
 },
     function (accessToken, refreshToken, profile, cb) {
         //find the user if DB if not present then save the usernameField
@@ -29,7 +29,7 @@ googleRouter.get('/', passport.authenticate('google', { scope: ['profile', 'emai
 //redirect url after google authentication
 googleRouter.get('/redirect', passport.authenticate('google', { failureRedirect: '/api/auth/google/fail' }), (req, res) => {
     // Successful authentication, redirect to client application
-    res.redirect('http://localhost:3001');
+    res.redirect(process.env.CLIENT_URL);
 });
 
 //handles failed authentication from google
