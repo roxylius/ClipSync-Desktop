@@ -11,3 +11,4 @@
 [x] fix electron store values not changing
 [] fix login in with google
 [] fix login in with github
+[] to add prevention mechanism if the device is not connected reconnect again
