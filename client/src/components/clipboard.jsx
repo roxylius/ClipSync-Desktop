@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from "react";
 import io from "socket.io-client";
+import isOnline from 'is-online';
 
 //importing local assets
 import MobileIcon from './assets/img/smartphone.png';
 import LaptopIcon from './assets/img/laptop.png';
 import './css/clipboard.css';
 import Navbar from "./navbar";
+import Offline from "./offline";
 
 const electron = window.require("electron");
 const { ipcRenderer } = electron;
 
 //constants
-const { COPIED_TEXT } = require("../shared/constants");
+const { COPIED_TEXT, CONSOLE_LOG } = require("../shared/constants");
 
 //etablishes a socket connection to the server 
 const serverURL = process.env.REACT_APP_SERVER_URL;
@@ -38,6 +40,12 @@ const ClipB = () => {
     //array of objects of connected devices
     const [remoteDevices, setRemoteDevices] = useState([]);
 
+    //stores internet status
+    const [ifOnline, setIfOnline] = useState(true);
+
+    //stores my server status 
+    const [serverStatus, setServerStatus] = useState(localStorage.getItem('serverStatus'));
+
     //async localstorage
     const asyncLocalStorage = {
         async setItem(key, value) {
@@ -49,6 +57,74 @@ const ClipB = () => {
             return localStorage.getItem(key);
         }
     };
+
+
+    //function handling internet status
+    const internetStatus = async () => {
+        const status = await isOnline();
+        setIfOnline(status);
+        console.log(status);
+
+        //set server status if internet is disconnected
+        if (status === false) {
+            setServerStatus('false');
+            asyncLocalStorage.setItem('serverStatus', 'false');
+        }
+
+    }
+
+    //function initially runs status then after 60sec it runs the function again
+    useEffect(() => {
+        internetStatus();
+
+        const IntervalId = setInterval(() => {
+            internetStatus();
+            console.log("interval run");
+        }, 60 * 1000); //60 seconds
+
+        return () => clearInterval(IntervalId);
+    });
+
+
+    //check my server status
+    const checkServerStatus = async () => {
+        try {
+            //fetches the server 
+            const reponse = await fetch(serverURL);
+            const statusCode = reponse.status;
+            console.log("server status: ", statusCode);
+
+            if (statusCode === 200) {
+                asyncLocalStorage.setItem('serverStatus', 'true');
+                setServerStatus('true');
+            }
+            else {
+                asyncLocalStorage.setItem('serverStatus', 'false');
+                setServerStatus('false');
+            }
+
+        }
+        catch (error) {
+            // Handle fetch error
+            console.error('Error checking server status:', error.message);
+            asyncLocalStorage.setItem('serverStatus', 'false');
+            setServerStatus('false');
+        }
+    }
+
+    //checks if the server status state and set to 'null' after 10min of check status action
+    useEffect(() => {
+        let timer;
+        if (serverStatus === 'true' || 'false') {
+            timer = setTimeout(() => {
+                asyncLocalStorage.setItem('serverStatus', 'null');
+                setServerStatus('null');
+                console.log("timeout successfully");
+            }, 2 * 60 * 1000); //2 minutes
+        };
+
+        return () => clearTimeout(timer);
+    })
 
     //fetches user data from the server using api call
     const getUser = async () => {
@@ -76,8 +152,6 @@ const ClipB = () => {
             //     await asyncLocalStorage.setItem("name", name);
             //     await asyncLocalStorage.setItem("id", _id);
             // }
-
-
             console.log(body);
 
             //count number of clicks to button
@@ -189,6 +263,19 @@ const ClipB = () => {
 
         })
 
+        socket.io.on('ping', () => {
+            console.log('socket is working and receiving packets of data!');
+        });
+
+        socket.io.on('error', (error) => {
+            console.log('Error in socket connection: ', error);
+            socket.connect();
+        });
+
+        socket.on('connect', () => {
+            console.log('successfully connected to socket!');
+        });
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [socket]);
 
@@ -197,6 +284,14 @@ const ClipB = () => {
         //set the copiedMsg to the latest copied text via main process 
         setCopiedMsg(message);
     });
+
+    //receives message from the main process 
+    ipcRenderer.on(CONSOLE_LOG, (evt, message) => {
+        console.log('receive message');
+        //receives console message from main process and logs it in renderer process
+
+        console.log(message);
+    })
 
 
     //stops the service if active
@@ -230,9 +325,12 @@ const ClipB = () => {
         }
     }
 
-
     return (<div className="background">
         <Navbar />
+        <div className="server-status">
+            <p>Server Status: {serverStatus !== "null" ? ((serverStatus === 'true') ? 'online🟢' : 'offline🔴') : null} </p>
+            {serverStatus === 'null' ? <button type="submit" onClick={checkServerStatus} className="btns server-button">check status</button> : null}
+        </div>
         <div className="clipboard-container">
             <button type="submit" className="btns" onClick={handleService}>{start === false ? 'Start Service' : 'Stop Service'}</button>
             {/* for dev testing
@@ -261,6 +359,7 @@ const ClipB = () => {
                 }
             </div>
         </div>
+        {ifOnline ? null : <Offline />}
     </div>)
 }
 

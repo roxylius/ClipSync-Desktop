@@ -1,0 +1,13 @@
+.offline {
+    background-color: red;
+    color: whitesmoke;
+    height: 60px;
+    position: absolute;
+    width: 100vw;
+    bottom: 0px;
+    text-align: center;
+}
+
+.offline-text {
+    margin: 0;
+}

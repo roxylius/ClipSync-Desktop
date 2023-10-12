@@ -42,11 +42,14 @@
     margin: 1em auto;
     position: relative;
     cursor: pointer;
+    z-index: 2;
+
 }
 
 .list-choice input[type="radio"] {
     position: absolute;
     left: -9999px;
+
 }
 
 .list-choice-title {
@@ -57,14 +60,17 @@
     color: #FFF;
     border-radius: 0.2em;
 
+
 }
 
 .list-choice:hover .list-choice-title {
     border-radius: 0.2em 0.2em 0 0;
+
 }
 
 .list-choice-objects label:nth-last-of-type(1) span {
     border-radius: 0 0 0.2em 0.2em;
+
 }
 
 .list-choice span {
@@ -94,12 +100,15 @@
     position: relative;
     top: 0;
     transition: all 250ms ease-in-out;
+
 }
 
 .list-choice:hover .list-choice-objects label:nth-last-of-type(1) input[type="radio"]:checked+span {
     border-radius: 0 0 0.2em 0.2em;
+
 }
 
 .list-choice:hover .list-choice-objects {
     max-height: 540px;
+
 }
